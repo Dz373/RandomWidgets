@@ -7,9 +7,6 @@ public class Calculator : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textOutput;
     [SerializeField] private Transform buttons;
 
-    private List<string> expression = new List<string>();
-    private List<int> digits = new List<int>();
-
     private State state = State.input;
 
     private void Awake() {
@@ -20,122 +17,96 @@ public class Calculator : MonoBehaviour
 
     private void ButtonInput(string input) {
         if (input.Equals("=")) {
-            expression.Add(ConvertDigits());
-
-            int answer = EvaluateInfix(expression);
+            List<string> postfix = InfixToPostfix(textOutput.text);
+            double answer = EvalutatePostfix(postfix);
 
             textOutput.text = answer.ToString();
             state = State.answer;
         }
         else {
             if(state == State.answer) {
-                ClearCalculator();
+                ResetCalculator();
                 state = State.input;
             }
 
             textOutput.text += input;
-
-            if (IsNumber(input)) {
-                digits.Add(int.Parse(input));
-            }
-            else {
-                expression.Add(ConvertDigits());
-                expression.Add(input);
-                digits.Clear();
-            }
         }
     }
 
-    static int EvaluateInfix(List<string> arr) {
-        Stack<int> values = new Stack<int>();
-        Stack<string> ops = new Stack<string>();
+    static List<string> InfixToPostfix(string expr) {
+        List<string> output = new List<string>();
+        Stack<char> operators = new Stack<char>();
+        for (int i = 0; i < expr.Length; i++) {
+            char token = expr[i];
 
-        int n = arr.Count;
-        for (int i = 0; i < n; i++) {
-            string token = arr[i];
+            if (char.IsDigit(token) || token == '.') {
+                string num = "";
+                while (i < expr.Length && (char.IsDigit(expr[i]) || expr[i] == '.'))
+                    num += expr[i++];
+                i--;
 
-            if (IsNumber(token)) {
-                values.Push(int.Parse(token));
+                output.Add(num);
+            }
+
+            else if (token == '(')
+                operators.Push(token);
+
+            else if (token == ')') {
+                while (!(operators.Peek() == '('))
+                    output.Add(operators.Pop().ToString());
+
+                operators.Pop();
             }
 
             else {
-                while (ops.Count > 0 && ((Precedence(ops.Peek()) > Precedence(token))
-                        || (Precedence(ops.Peek()) == Precedence(token)
-                        && !IsRightAssociative(token)))) {
+                while (operators.Count > 0 && (Precedence(operators.Peek()) >= Precedence(token)))
+                    output.Add(operators.Pop().ToString());
+ 
+                operators.Push(token);
+            }
+        }
 
-                    int val2 = values.Pop();
-                    int val1 = values.Pop();
-                    string op = ops.Pop();
-                    values.Push(ApplyOperation(val1, val2, op));
+        while (operators.Count > 0)
+            output.Add(operators.Pop().ToString());
+
+        return output;
+    }
+
+    static double EvalutatePostfix(List<string> expr) {
+        Stack<double> stack = new Stack<double>();
+        foreach (string token in expr) {
+            if (double.TryParse(token, out double num))
+                stack.Push(num);
+
+            else {
+                double b = stack.Pop();
+                double a = stack.Pop();
+                switch (token) {
+                    case "+":
+                        stack.Push(a + b); break;
+                    case "-":
+                        stack.Push(a - b); break;
+                    case "*":
+                        stack.Push(a * b); break;
+                    case "/":
+                        stack.Push(a / b); break;
+                    case "^":
+                        stack.Push(Mathf.Pow((float)a, (float)b)); break;
                 }
-                ops.Push(token);
             }
         }
 
-        while (ops.Count > 0) {
-            int val2 = values.Pop();
-            int val1 = values.Pop();
-            string op = ops.Pop();
-            values.Push(ApplyOperation(val1, val2, op));
-        }
-
-        return values.Pop();
+        return stack.Pop();
     }
 
-    static int ApplyOperation(int a, int b, string op) {
-        if (op == "+") return a + b;
-        if (op == "-") return a - b;
-        if (op == "*") return a * b;
-        if (op == "/") {
-            if (a * b < 0 && a % b != 0)
-                return (a / b) - 1;
-            return a / b;
-        }
-        if (op == "^")
-            return (int)Mathf.Pow(a, b);
-
+    static int Precedence(char op) {
+        if (op == '+' || op == '-') return 1;
+        if (op == '*' || op == '/') return 2;
+        if (op == '^') return 3;
         return 0;
     }
 
-    static int Precedence(string op) {
-        if (op == "+" || op == "-") return 1;
-        if (op == "*" || op == "/") return 2;
-        if (op == "^") return 3;
-        return 0;
-    }
-
-    static bool IsRightAssociative(string op) {
-        return op == "^";
-    }
-
-    static bool IsNumber(string token) {
-        if (string.IsNullOrEmpty(token))
-            return false;
-
-        int start = (token[0] == '-') ? 1 : 0;
-        if (start == 1 && token.Length == 1)
-            return false;
-
-        for (int i = start; i < token.Length; i++) {
-            if (!char.IsDigit(token[i]))
-                return false;
-        }
-        return true;
-    }
-
-    private string ConvertDigits() {
-        int newNum = 0;
-        for (int i = 0; i < digits.Count; i++) {
-            newNum += digits[digits.Count - 1 - i] * (int)Mathf.Pow(10, i);
-        }
-
-        digits.Clear();
-        return newNum.ToString();
-    }
-
-    public void ClearCalculator() {
-        expression.Clear();
-        digits.Clear();
+    public void ResetCalculator() {
         textOutput.text = "";
     }
 
