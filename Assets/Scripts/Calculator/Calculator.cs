@@ -18,9 +18,11 @@ public class Calculator : MonoBehaviour
     private void ButtonInput(string input) {
         if (input.Equals("=")) {
             List<string> postfix = InfixToPostfix(textOutput.text);
+            Debug.Log(string.Join(" ", postfix));
+            
             double answer = EvalutatePostfix(postfix);
-
             textOutput.text = answer.ToString();
+
             state = State.answer;
         }
         else {
@@ -33,7 +35,7 @@ public class Calculator : MonoBehaviour
         }
     }
 
-    static List<string> InfixToPostfix(string expr) {
+    private List<string> InfixToPostfix(string expr) {
         List<string> output = new List<string>();
         Stack<char> operators = new Stack<char>();
         for (int i = 0; i < expr.Length; i++) {
@@ -45,23 +47,47 @@ public class Calculator : MonoBehaviour
                     num += expr[i++];
                 i--;
 
-                output.Add(num);
+                if(state == State.negative) {
+                    output.Add("0");
+                    output.Add(num);
+                    output.Add("-");
+                    state = State.input;
+                }
+                else
+                    output.Add(num);
             }
 
-            else if (token == '(')
-                operators.Push(token);
+            else if (token == '(') {
+                if(expr[i+1] == '-' && expr[i+2] == ')' ) {
+                    state = State.negative;
+                    i += 2;
+                }
+
+                else {
+                    if (state == State.negative) {
+                        output.Add("0");
+                        state = State.negativePara;
+                    }
+                    operators.Push(token);
+                }
+            }
 
             else if (token == ')') {
                 while (!(operators.Peek() == '('))
                     output.Add(operators.Pop().ToString());
 
                 operators.Pop();
+
+                if (state == State.negativePara) {
+                    output.Add("-");
+                    state = State.input;
+                }
             }
 
             else {
                 while (operators.Count > 0 && (Precedence(operators.Peek()) >= Precedence(token)))
                     output.Add(operators.Pop().ToString());
- 
+
                 operators.Push(token);
             }
         }
@@ -112,6 +138,8 @@ public class Calculator : MonoBehaviour
 
     enum State {
         answer,
-        input
+        input,
+        negative,
+        negativePara
     }
 }
