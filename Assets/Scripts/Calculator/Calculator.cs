@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 public class Calculator : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textOutput;
+    [SerializeField] private TextMeshProUGUI textInput;
+    [SerializeField] private TextMeshProUGUI textAnswer;
     [SerializeField] private Transform buttons;
 
     private State state = State.input;
+    private double answer;
 
     private void Awake() {
         foreach (InputButton b in buttons.GetComponentsInChildren<InputButton>()) {
@@ -17,21 +19,29 @@ public class Calculator : MonoBehaviour
 
     private void ButtonInput(string input) {
         if (input.Equals("=")) {
-            List<string> postfix = InfixToPostfix(textOutput.text);
-            Debug.Log(string.Join(" ", postfix));
-            
-            double answer = EvalutatePostfix(postfix);
-            textOutput.text = answer.ToString();
+            try {
+                List<string> postfix = InfixToPostfix(textInput.text);
+                Debug.Log(string.Join(" ", postfix));
+
+                answer = EvalutatePostfix(postfix);
+                textAnswer.text = answer.ToString();
+            } catch {
+                textAnswer.text = "SYNTAX ERROR";
+            }
 
             state = State.answer;
         }
         else {
             if(state == State.answer) {
                 ResetCalculator();
+                
+                if(input.Length == 1 && IsOperator(char.Parse(input)))
+                    textInput.text += "ANS";
+                
                 state = State.input;
             }
 
-            textOutput.text += input;
+            textInput.text += input;
         }
     }
 
@@ -84,6 +94,11 @@ public class Calculator : MonoBehaviour
                 }
             }
 
+            else if (token == 'A') {
+                output.Add(answer.ToString());
+                i += 2;
+            }
+
             else {
                 while (operators.Count > 0 && (Precedence(operators.Peek()) >= Precedence(token)))
                     output.Add(operators.Pop().ToString());
@@ -133,7 +148,14 @@ public class Calculator : MonoBehaviour
     }
 
     public void ResetCalculator() {
-        textOutput.text = "";
+        textInput.text = "";
+        textAnswer.text = "";
+    }
+
+    static bool IsOperator(char c) {
+        if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^')
+            return true;
+        return false;
     }
 
     enum State {
