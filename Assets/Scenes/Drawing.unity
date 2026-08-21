@@ -206,6 +206,7 @@ MonoBehaviour:
   minDistance: 0.1
   lineThickness: 0.1
   lineColor: {r: 0, g: 0, b: 0, a: 1}
+  drawnObject: {fileID: 8371214908356537072, guid: 5e7faea483bdf88499d6b63b567191fe, type: 3}
 --- !u!4 &1255966337
 Transform:
   m_ObjectHideFlags: 0

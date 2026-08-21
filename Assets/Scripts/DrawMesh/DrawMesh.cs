@@ -1,17 +1,25 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class DrawMesh : MonoBehaviour
 {
     public float minDistance = .1f;
     public float lineThickness = .1f;
     public Color lineColor;
+    public GameObject drawnObject;
 
     private Mesh mesh;
     private Vector3 lastMousePosition;
 
+    private List<GameObject> meshes = new List<GameObject>();
+
     private void Update() {
         if (Input.GetMouseButtonDown(0)) {
             mesh = new Mesh();
+
+            GameObject drawnLine = Instantiate(drawnObject);
+            drawnLine.GetComponent<MeshFilter>().mesh = mesh;
+            meshes.Add(drawnLine);
 
             Vector3[] vertices = new Vector3[4];
             Vector2[] uv = new Vector2[4];
@@ -45,8 +53,6 @@ public class DrawMesh : MonoBehaviour
             mesh.triangles = triangles;
             mesh.colors = colors;
             mesh.MarkDynamic();
-
-            GetComponent<MeshFilter>().mesh = mesh;
 
             lastMousePosition = GetMousePosition();
         }
