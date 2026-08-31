@@ -4,27 +4,34 @@ using System.Collections.Generic;
 
 public class GachaButton : MonoBehaviour
 {
-    public int testAmount;
-    public TextMeshProUGUI resultText;
+    public List<string> commonItems = new List<string>();
+    public List<string> rareItems = new List<string>();
+    public List<string> superrareItems = new List<string>();
+    public List<string> legendaryItems = new List<string>();
+    
     public Dictionary<float, string> dropChance = new Dictionary<float, string>();
+
+    public int testAmount;
     public Dictionary<string, int> testDrops = new Dictionary<string, int>();
+
+    public TextMeshProUGUI resultText;
 
     private void Start() {
         dropChance.Add(0.01f, "Legendary");
-        dropChance.Add(0.15f, "Super Rare");
+        dropChance.Add(0.15f, "SuperRare");
         dropChance.Add(0.30f, "Rare");
         dropChance.Add(0.54f, "Common");
     }
 
     private void TestRolls() {
         testDrops.Clear();
-        testDrops.Add("Legendary", 0);
-        testDrops.Add("Super Rare", 0);
-        testDrops.Add("Rare", 0);
-        testDrops.Add("Common", 0);
 
         for (int i = 0; i < testAmount; i++) {
-            testDrops[GachaRoll()] += 1;
+            string pull = GachaRoll();
+            if (testDrops.ContainsKey(pull))
+                testDrops[pull] += 1;
+            else
+                testDrops.Add(pull, 1);
         }
 
         foreach (string key in testDrops.Keys) {
@@ -47,6 +54,25 @@ public class GachaButton : MonoBehaviour
             }
         }
 
-        return dropChance[val];
+        List<string> items = null;
+        switch (dropChance[val]) {
+            case "Legendary":
+                items = legendaryItems;
+                break;
+
+            case "SuperRare":
+                items = superrareItems;
+                break;
+
+            case "Rare":
+                items = rareItems;
+                break;
+
+            case "Common":
+                items = commonItems;
+                break;
+        }
+
+        return items[(int)Random.Range(0, items.Count)];
     }
 }

@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 152277605}
   - component: {fileID: 152277604}
   m_Layer: 0
-  m_Name: Button
+  m_Name: Gacha Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -427,6 +427,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d62e3a2757908df4aa9207c417eb33a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  commonItems:
+  - common
+  - 1 star
+  - basic
+  rareItems:
+  - rare
+  - uncommon
+  superrareItems:
+  - SR
+  - super
+  legendaryItems:
+  - SSR
   testAmount: 1000
   resultText: {fileID: 1660748833}
 --- !u!1 &1660748831
