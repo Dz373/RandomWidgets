@@ -147,6 +147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3541211207374269593}
   - component: {fileID: 4940182481069518101}
+  - component: {fileID: 6033783866503686260}
   - component: {fileID: 4878978605610232314}
   - component: {fileID: 2521266654450351846}
   - component: {fileID: 1567156547023924455}
@@ -189,8 +190,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bf152b236c9bd14d8a9f773dc36dabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pos: {x: 0, y: 0}
+  revealed: 0
+  flagged: 0
   button: {fileID: 1567156547023924455}
+  rightClickButton: {fileID: 6033783866503686260}
   buttonText: {fileID: 985781767574642414}
+  img: {fileID: 2521266654450351846}
+--- !u!114 &6033783866503686260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8953230540994428729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2249d1b88b4427b4b975e6d82897a00c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!222 &4878978605610232314
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -9,7 +9,10 @@ public class MinesweeperButton : MonoBehaviour
     public bool flagged;
 
     public Button button;
-    public TextMeshProUGUI buttonText;
+    public RightClickDetector rightClickButton;
+    
+    [SerializeField] private TextMeshProUGUI buttonText;
+    [SerializeField] private Image img;
 
     public void InitializeButton(int r, int c) {
         pos = new Vector2Int(r, c);
@@ -17,7 +20,26 @@ public class MinesweeperButton : MonoBehaviour
     }
 
     public void RevealCell(int val) {
+        if(val == -1) {
+            img.color = Color.red;
+            return;
+        }
+
         if(val != 0)
             buttonText.text = val.ToString();
+
+        img.color = Color.gray;
+        revealed = true;
+    }
+
+    public void FlagCell() {
+        if (flagged) {
+            flagged = false;
+            img.color = Color.white;
+        }
+        else {
+            flagged = true;
+            img.color = Color.green;
+        }
     }
 }

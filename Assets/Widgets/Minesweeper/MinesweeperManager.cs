@@ -26,17 +26,21 @@ public class MinesweeperManager : MonoBehaviour
 
         foreach (MinesweeperButton b in buttonContainers.GetComponentsInChildren<MinesweeperButton>()) {
             b.button.onClick.AddListener(() => CellPress(b.pos));
+            b.rightClickButton.onRightClick.AddListener(() => FlagCell(b.pos));
         }
     }
 
+    public void FlagCell(Vector2Int cell) {
+        buttonMap[cell.x, cell.y].FlagCell();
+    }
+
     public void CellPress(Vector2Int cell) {
-        if (buttonMap[cell.x, cell.y].revealed)
+        if (buttonMap[cell.x, cell.y].revealed || buttonMap[cell.x, cell.y].flagged)
             return;
 
         int cellVal = map[cell.x, cell.y];
 
         buttonMap[cell.x, cell.y].RevealCell(cellVal);
-        buttonMap[cell.x, cell.y].revealed = true;
 
         if (cellVal == 0) {
             for (int r = cell.x - 1; r <= cell.x + 1; r++) {
