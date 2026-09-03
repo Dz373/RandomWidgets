@@ -1,4 +1,7 @@
 using UnityEngine;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine.UIElements;
 
 public class MinesweeperManager : MonoBehaviour
 {
@@ -11,23 +14,15 @@ public class MinesweeperManager : MonoBehaviour
 
     [SerializeField] private GameObject buttonPrefab;
     [SerializeField] private GameObject buttonContainers;
+    [SerializeField] private TMP_InputField rowInput;
+    [SerializeField] private TMP_InputField colInput;
+    [SerializeField] private TMP_InputField mineInput;
 
     private void Start() {
         map = CreateNewMap();
         print(Print2DArray(map));
 
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < columns; c++) {
-                GameObject newButton = Instantiate(buttonPrefab, buttonContainers.transform);
-                buttonMap[r, c] = newButton.GetComponent<MinesweeperButton>();
-                buttonMap[r, c].InitializeButton(r, c);
-            }
-        }
-
-        foreach (MinesweeperButton b in buttonContainers.GetComponentsInChildren<MinesweeperButton>()) {
-            b.button.onClick.AddListener(() => CellPress(b.pos));
-            b.rightClickButton.onRightClick.AddListener(() => FlagCell(b.pos));
-        }
+        GenerateMap();
     }
 
     public void FlagCell(Vector2Int cell) {
@@ -54,6 +49,33 @@ public class MinesweeperManager : MonoBehaviour
                 }
             }
         }
+        else if (cellVal == -1) {
+            EndGame();
+        }
+    }
+
+    public void StartNewGame() {
+        for (int i = rows*columns - 1; i >= 0; i--) {
+            Destroy(buttonContainers.transform.GetChild(i).gameObject);
+        }
+
+        rows = int.Parse(rowInput.text);
+        columns = int.Parse(colInput.text);
+        mines = int.Parse(mineInput.text);
+        map = CreateNewMap();
+
+        GenerateMap();
+    }
+
+    private void EndGame() {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < columns; c++) {
+                if (buttonMap[r, c].revealed || buttonMap[r, c].flagged)
+                    continue;
+
+                buttonMap[r, c].RevealCell(map[r, c]);
+            }
+        }
     }
 
     private int[,] CreateNewMap() {
@@ -73,6 +95,21 @@ public class MinesweeperManager : MonoBehaviour
         }
 
         return newMap;
+    }
+
+    private void GenerateMap() {
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < columns; c++) {
+                GameObject newButton = Instantiate(buttonPrefab, buttonContainers.transform);
+                buttonMap[r, c] = newButton.GetComponent<MinesweeperButton>();
+                buttonMap[r, c].InitializeButton(r, c);
+            }
+        }
+
+        foreach (MinesweeperButton b in buttonContainers.GetComponentsInChildren<MinesweeperButton>()) {
+            b.button.onClick.AddListener(() => CellPress(b.pos));
+            b.rightClickButton.onRightClick.AddListener(() => FlagCell(b.pos));
+        }
     }
 
     private void SetMine(int[,] newMap) {
