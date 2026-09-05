@@ -8,6 +8,7 @@ public class MinesweeperManager : MonoBehaviour
     public int rows;
     public int columns;
     public int mines;
+    private bool gameOver;
     
     public int[,] map;
     public MinesweeperButton[,] buttonMap;
@@ -19,10 +20,11 @@ public class MinesweeperManager : MonoBehaviour
     [SerializeField] private TMP_InputField mineInput;
 
     private void Start() {
-        map = CreateNewMap();
-        print(Print2DArray(map));
+        CreateNewMap();
 
-        GenerateMap();
+        rowInput.text = rows.ToString();
+        colInput.text = columns.ToString();
+        mineInput.text = mines.ToString();
     }
 
     public void FlagCell(Vector2Int cell) {
@@ -30,22 +32,73 @@ public class MinesweeperManager : MonoBehaviour
     }
 
     public void CellPress(Vector2Int cell) {
-        if (buttonMap[cell.x, cell.y].revealed || buttonMap[cell.x, cell.y].flagged)
+        if (buttonMap[cell.x, cell.y].flagged || gameOver)
             return;
 
-        int cellVal = map[cell.x, cell.y];
+        if(buttonMap[cell.x, cell.y].revealed) {
+            if(map[cell.x, cell.y] != 0) {
+                List<Vector2Int> surroundingCells = GetSurroundingCells(cell.x, cell.y);
+                Stack<Vector2Int> stack = new Stack<Vector2Int>();
+                List<Vector2Int> usedCells = new List<Vector2Int>();
+                int flags = 0;
 
+                foreach (Vector2Int adjCell in surroundingCells) {
+                    if (buttonMap[adjCell.x, adjCell.y].flagged)
+                        flags++;
+                    else {
+                        stack.Push(adjCell);
+                        usedCells.Add(adjCell);
+                    }
+                }
+
+                if(flags == map[cell.x, cell.y]) {
+                    while (stack.Count > 0) {
+                        Vector2Int curCell = stack.Pop();
+                        int curVal = map[curCell.x, curCell.y];
+                        buttonMap[curCell.x, curCell.y].RevealCell(curVal);
+
+                        if (curVal == 0) {
+                            foreach (Vector2Int adjCell in GetSurroundingCells(curCell.x, curCell.y)) {
+                                if (usedCells.Contains(adjCell))
+                                    continue;
+                                stack.Push(adjCell);
+                                usedCells.Add(adjCell);
+                            }
+                        }
+                        else if (curVal == -1) {
+                            EndGame();
+                        }
+                    }
+                }
+            }
+
+            return;
+        }
+
+        int cellVal = map[cell.x, cell.y];
         buttonMap[cell.x, cell.y].RevealCell(cellVal);
 
         if (cellVal == 0) {
-            for (int r = cell.x - 1; r <= cell.x + 1; r++) {
-                if (r < 0 || r >= rows)
-                    continue;
-                for (int c = cell.y - 1; c <= cell.y + 1; c++) {
-                    if (c < 0 || c >= columns)
-                        continue;
+            Stack<Vector2Int> stack = new Stack<Vector2Int>();
+            List<Vector2Int> usedCells = new List<Vector2Int>();
+            
+            foreach (Vector2Int adjCell in GetSurroundingCells(cell.x, cell.y)) {
+                stack.Push(adjCell);
+                usedCells.Add(adjCell);
+            }
 
-                    CellPress(new Vector2Int(r, c));
+            while (stack.Count > 0) {
+                Vector2Int curCell = stack.Pop();
+                int curVal = map[curCell.x, curCell.y];
+                buttonMap[curCell.x, curCell.y].RevealCell(curVal);
+
+                if(curVal == 0) {
+                    foreach (Vector2Int adjCell in GetSurroundingCells(curCell.x, curCell.y)) {
+                        if (usedCells.Contains(adjCell))
+                            continue;
+                        stack.Push(adjCell);
+                        usedCells.Add(adjCell);
+                    }
                 }
             }
         }
@@ -62,9 +115,9 @@ public class MinesweeperManager : MonoBehaviour
         rows = int.Parse(rowInput.text);
         columns = int.Parse(colInput.text);
         mines = int.Parse(mineInput.text);
-        map = CreateNewMap();
+        CreateNewMap();
 
-        GenerateMap();
+        gameOver = false;
     }
 
     private void EndGame() {
@@ -76,28 +129,25 @@ public class MinesweeperManager : MonoBehaviour
                 buttonMap[r, c].RevealCell(map[r, c]);
             }
         }
+        gameOver = true;
     }
 
-    private int[,] CreateNewMap() {
-        int[,] newMap = new int[rows, columns];
+    private void CreateNewMap() {
+        map = new int[rows, columns];
         buttonMap = new MinesweeperButton[rows, columns];
 
         for (int i = 0; i < mines; i++)
-            SetMine(newMap);
+            SetMine();
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
-                if (newMap[r, c] == -1)
+                if (map[r, c] == -1)
                     continue;
 
-                newMap[r, c] = GetSurroundingMines(newMap, r, c);
+                map[r, c] = GetSurroundingMines(r, c);
             }
         }
 
-        return newMap;
-    }
-
-    private void GenerateMap() {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < columns; c++) {
                 GameObject newButton = Instantiate(buttonPrefab, buttonContainers.transform);
@@ -112,30 +162,41 @@ public class MinesweeperManager : MonoBehaviour
         }
     }
 
-    private void SetMine(int[,] newMap) {
+    private void SetMine() {
         int r = Random.Range(0, rows);
         int c = Random.Range(0, columns);
 
-        if (newMap[r, c] == -1)
-            SetMine(newMap);
+        if (map[r, c] == -1)
+            SetMine();
 
-        newMap[r, c] = -1;
+        map[r, c] = -1;
     }
 
-    private int GetSurroundingMines(int[,] newMap, int row, int col) {
+    private int GetSurroundingMines(int row, int col) {
         int mines = 0;
-        for (int r = row-1; r <= row+1; r++) {
-            if (r < 0 || r >= rows)
-                continue;
-            for (int c = col-1; c <= col+1; c++) {
-                if (c < 0 || c >= columns)
-                    continue;
-
-                if (newMap[r, c] == -1)
-                    mines++;
-            }
+        foreach (Vector2Int cell in GetSurroundingCells(row, col)) {
+            if (map[cell.x, cell.y] == -1)
+                mines++;
         }
         return mines;
+    }
+
+    private List<Vector2Int> GetSurroundingCells(int row, int col) {
+        List<Vector2Int> cells = new List<Vector2Int>();
+        for (int r = row - 1; r <= row + 1; r++) {
+            if (r < 0 || r >= rows)
+                continue;
+            for (int c = col - 1; c <= col + 1; c++) {
+                if (c < 0 || c >= columns)
+                    continue;
+                if (c == col && r == row)
+                    continue;
+
+                cells.Add(new Vector2Int(r, c));
+            }
+        }
+
+        return cells;
     }
 
     private string Print2DArray(int[,] arr) {
