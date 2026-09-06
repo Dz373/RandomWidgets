@@ -13,6 +13,9 @@ public class InventoryManager : MonoBehaviour
 
     public Dictionary<Vector2Int, BlockItem> grid;
 
+    public BlockItem selectedItem;
+    public GameObject hoverTile;
+
     private void Start() {
         CreateNewInventory();
     }
@@ -20,8 +23,10 @@ public class InventoryManager : MonoBehaviour
     private void CreateNewInventory() {
         gridLayout.constraintCount = columns;
 
-        parentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, columns * 100 + 10);
-        parentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, rows * 100 + 10);
+        float w = columns * gridLayout.cellSize.x + (columns - 1) * gridLayout.spacing.x + 2 * gridLayout.padding.top;
+        float l = rows * gridLayout.cellSize.y + (rows - 1) * gridLayout.spacing.y + 2 * gridLayout.padding.top;
+        parentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
+        parentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, l);
 
         grid = new Dictionary<Vector2Int, BlockItem>();
 
