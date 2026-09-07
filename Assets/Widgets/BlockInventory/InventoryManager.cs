@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : MonoBehaviour, IPointerDownHandler
 {
     public int rows;
     public int columns;
@@ -30,12 +31,19 @@ public class InventoryManager : MonoBehaviour
 
         grid = new Dictionary<Vector2Int, BlockItem>();
 
-        for (int i = transform.childCount - 1; i >= 0; i--) {
-            Destroy(transform.GetChild(i).gameObject);
+        for (int i = gridLayout.transform.childCount - 1; i >= 0; i--) {
+            Destroy(gridLayout.transform.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < columns * rows; i++) {
-            Instantiate(gridSpace, transform);
+            Instantiate(gridSpace, gridLayout.transform);
+        }
+    }
+
+    public void OnPointerDown(PointerEventData eventData) {
+        if (selectedItem && selectedItem.moving) {
+            selectedItem.DeselectItem(hoverTile != null);
+            selectedItem = null;
         }
     }
 }

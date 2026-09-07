@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class GridSpace : MonoBehaviour, IPointerEnterHandler, IPointerDownHandler
+public class GridSpace : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private InventoryManager gm;
 
@@ -12,9 +12,7 @@ public class GridSpace : MonoBehaviour, IPointerEnterHandler, IPointerDownHandle
     public void OnPointerEnter(PointerEventData eventData) {
         gm.hoverTile = gameObject;
     }
-
-    public void OnPointerDown(PointerEventData eventData) {
-        if (gm.selectedItem.moving)
-            gm.selectedItem.OnPointerDown(eventData);
+    public void OnPointerExit(PointerEventData eventData) {
+        gm.hoverTile = null;
     }
 }
