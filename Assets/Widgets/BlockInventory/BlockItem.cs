@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System.Collections;
 
 public class BlockItem : MonoBehaviour {
     public bool moving;
     public bool inInventory;
+    private bool rotating;
     public Color color;
     public Vector3[] boxPositions;
 
@@ -17,7 +19,7 @@ public class BlockItem : MonoBehaviour {
     private InventoryManager gm;
     private List<GameObject> hitboxes = new List<GameObject>();
     private Vector3 selectOffset;
-
+    
     private void Start() {
         gm = FindFirstObjectByType<InventoryManager>();
 
@@ -34,12 +36,27 @@ public class BlockItem : MonoBehaviour {
 
             float scroll = Input.GetAxis("Mouse ScrollWheel");
             if (scroll != 0) {
-                if(scroll > 0)
-                    transform.RotateAround(transform.position, Vector3.forward, 90f);
+                if (rotating)
+                    return;
+                if (scroll > 0)
+                    StartCoroutine(RotateItem(90f));
                 else
-                    transform.RotateAround(transform.position, Vector3.forward, -90f);
+                    StartCoroutine(RotateItem(-90f));
             }
         }
+    }
+
+    private IEnumerator RotateItem(float degree) {
+        rotating = true;
+
+        Quaternion targetRotation = Quaternion.Euler(new Vector3(0, 0, rect.rotation.eulerAngles.z + degree));
+        while (Quaternion.Angle(transform.rotation, targetRotation) > 0.01f) {
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 30 * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+        rotating = false;
     }
 
     public void SelectItem(Vector3 selectedBox) {
@@ -82,7 +99,16 @@ public class BlockItem : MonoBehaviour {
         Vector3[] cords = new Vector3[boxPositions.Length];
 
         for(int i = 0; i < boxPositions.Length; i++) {
-            cords[i] = rect.localPosition + boxPositions[i] * 100 + selectOffset;
+            cords[i] = boxPositions[i]*100 + selectOffset;
+
+            if (rect.rotation.eulerAngles.z == 90)
+                cords[i] = new Vector3(-cords[i].y, cords[i].x);
+            else if (rect.rotation.eulerAngles.z == 180)
+                cords[i] = new Vector3(-cords[i].x, -cords[i].y);
+            else if (rect.rotation.eulerAngles.z == 270)
+                cords[i] = new Vector3(cords[i].y, -cords[i].x);
+
+            cords[i] += rect.localPosition;
         }
 
         return cords;
