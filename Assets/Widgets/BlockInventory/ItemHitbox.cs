@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ItemHitbox : MonoBehaviour, IPointerDownHandler
 {
@@ -10,9 +11,10 @@ public class ItemHitbox : MonoBehaviour, IPointerDownHandler
         item.SelectItem(boxPosition);
     }
 
-    public void InstantiateHitbox(Vector3 pos) {
+    public void InstantiateHitbox(Vector3 pos, Color color) {
         item = GetComponentInParent<BlockItem>();
         boxPosition = pos*100;
         GetComponent<RectTransform>().transform.localPosition = boxPosition;
+        GetComponent<Image>().color = color;
     }
 }

@@ -373,8 +373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3875bf130f7a4c44aa63d20ae78299d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rows: 3
-  columns: 3
+  rows: 4
+  columns: 4
   parentTransform: {fileID: 1229101745}
   gridLayout: {fileID: 1119909157}
   gridSpace: {fileID: 6098847327149689183, guid: c634d4466d4f6ca469b023916276966a, type: 3}
@@ -806,6 +806,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
+      propertyPath: color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
+      propertyPath: color.g
+      value: 0.49056602
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
+      propertyPath: color.r
+      value: 0.010505702
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
@@ -942,6 +958,10 @@ PrefabInstance:
     - target: {fileID: 1321250716852260807, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
+      propertyPath: color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5788587259578092083, guid: 3bb46eaa35314aa4cb8b54df05fec57a, type: 3}
       propertyPath: m_Enabled

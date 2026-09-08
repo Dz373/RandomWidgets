@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class BlockItem : MonoBehaviour {
     public bool moving;
-    public Vector2[] boxPositions;
+    public bool inInventory;
+    public Color color;
+    public Vector3[] boxPositions;
 
     [Header("References")]
     [SerializeField] private RectTransform rect;
@@ -14,13 +16,14 @@ public class BlockItem : MonoBehaviour {
 
     private InventoryManager gm;
     private List<GameObject> hitboxes = new List<GameObject>();
+    private Vector3 selectOffset;
 
     private void Start() {
         gm = FindFirstObjectByType<InventoryManager>();
 
         foreach (Vector3 pos in boxPositions) {
             GameObject hitbox = Instantiate(itemHitbox, hitboxContainer.transform);
-            hitbox.GetComponent<ItemHitbox>().InstantiateHitbox(pos);
+            hitbox.GetComponent<ItemHitbox>().InstantiateHitbox(pos, color);
             hitboxes.Add(hitbox);
         }
     }
@@ -40,19 +43,48 @@ public class BlockItem : MonoBehaviour {
     }
 
     public void SelectItem(Vector3 selectedBox) {
+        if (gm.selectedItem != null) {
+            if(!gm.IsInBounds(rect.localPosition))
+                gm.OnPointerDown(null);
+            return;
+        }
+
+        if (inInventory) {
+            gm.RemoveFromInventory(GetBoxCords());
+        }
+
         moving = true;
         gm.selectedItem = this;
         canvasGroup.blocksRaycasts = false;
-        hitboxContainer.GetComponent<RectTransform>().localPosition = -selectedBox;
+        selectOffset = -selectedBox;
+        hitboxContainer.GetComponent<RectTransform>().localPosition = selectOffset;
     }
 
-    public void DeselectItem(bool validGrid) {
-        canvasGroup.blocksRaycasts = true;
-        moving = false;
-
-        if (validGrid) {
+    public bool DeselectItem() {
+        if (gm.hoverTile) {
             transform.position = gm.hoverTile.transform.position;
+            Vector3[] itemSpaces = GetBoxCords();
+
+            if (gm.IsValidSpaces(itemSpaces)) {
+                gm.PlaceInInventory(itemSpaces, this);
+                inInventory = true;
+            }
+            else
+                return false;
         }
 
+        canvasGroup.blocksRaycasts = true;
+        moving = false;
+        return true;
+    }
+
+    private Vector3[] GetBoxCords() {
+        Vector3[] cords = new Vector3[boxPositions.Length];
+
+        for(int i = 0; i < boxPositions.Length; i++) {
+            cords[i] = rect.localPosition + boxPositions[i] * 100 + selectOffset;
+        }
+
+        return cords;
     }
 }
