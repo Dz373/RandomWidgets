@@ -75,6 +75,7 @@ public class BlockItem : MonoBehaviour {
         canvasGroup.blocksRaycasts = false;
         selectOffset = -selectedBox;
         hitboxContainer.GetComponent<RectTransform>().localPosition = selectOffset;
+        transform.SetAsLastSibling();
     }
 
     public bool DeselectItem() {
