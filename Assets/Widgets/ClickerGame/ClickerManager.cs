@@ -11,8 +11,14 @@ public class ClickerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI counterText;
 
     private void Start() {
-        int totalSeconds = CaculateOfflineTime();
+        //int totalSeconds = CaculateOfflineTime();
         
+    }
+
+    private int CalculateIdleGain() {
+        
+        
+        return 0;
     }
 
     public void UpdateCounter(int amount) {
@@ -22,6 +28,7 @@ public class ClickerManager : MonoBehaviour
 
     public void SaveGame() {
         PlayerPrefs.SetString("QuitTime", DateTime.UtcNow.ToString());
+        
         PlayerPrefs.Save();
     }
 
