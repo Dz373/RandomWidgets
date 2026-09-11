@@ -14,8 +14,9 @@ public class IdleClicker : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI nameText;
 
-    private void Start() {
+    private void Awake() {
         gm = FindFirstObjectByType<ClickerManager>();
+        gm.powerPerSecond.Add(buttonName, GetPowerPerSecond());
     }
 
     private void OnValidate() {
@@ -43,5 +44,9 @@ public class IdleClicker : MonoBehaviour
             gm.UpdateCounter(-cost);
             cost = (int)(cost * 1.2);
         }
+    }
+
+    public float GetPowerPerSecond() {
+        return power / interval;
     }
 }

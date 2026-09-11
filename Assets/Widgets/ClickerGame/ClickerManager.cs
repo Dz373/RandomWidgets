@@ -8,17 +8,22 @@ public class ClickerManager : MonoBehaviour
 {
     public int counter = 0;
 
+    public Dictionary<string, float> powerPerSecond = new Dictionary<string, float>();
+
     [SerializeField] private TextMeshProUGUI counterText;
 
     private void Start() {
         //int totalSeconds = CaculateOfflineTime();
-        
+        print(CalculateIdleGain());
     }
 
     private int CalculateIdleGain() {
+        float total = 0;
+        foreach (string key in powerPerSecond.Keys) {
+            total += powerPerSecond[key];
+        }
         
-        
-        return 0;
+        return (int)total;
     }
 
     public void UpdateCounter(int amount) {
