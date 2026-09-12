@@ -16,10 +16,11 @@ public class BlockItem : MonoBehaviour {
     [SerializeField] private GameObject itemHitbox;
     [SerializeField] private GameObject hitboxContainer;
 
-    private InventoryManager gm;
+    public InventoryManager gm;
     private List<GameObject> hitboxes = new List<GameObject>();
     private Vector3 selectOffset;
-    
+    private Vector3 startingPos;
+
     private void Start() {
         gm = FindFirstObjectByType<InventoryManager>();
 
@@ -70,6 +71,7 @@ public class BlockItem : MonoBehaviour {
             gm.RemoveFromInventory(GetBoxCords());
         }
 
+        startingPos = transform.position;
         moving = true;
         gm.selectedItem = this;
         canvasGroup.blocksRaycasts = false;
@@ -87,8 +89,11 @@ public class BlockItem : MonoBehaviour {
                 gm.PlaceInInventory(itemSpaces, this);
                 inInventory = true;
             }
-            else
-                return false;
+            else {
+                if(gm.itemSelectMode == InventoryManager.SelectMode.click)
+                    return false;
+                transform.position = startingPos;
+            }
         }
 
         canvasGroup.blocksRaycasts = true;

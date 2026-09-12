@@ -375,6 +375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rows: 3
   columns: 3
+  itemSelectMode: 1
   parentTransform: {fileID: 1229101745}
   gridLayout: {fileID: 1119909157}
   gridSpace: {fileID: 6098847327149689183, guid: c634d4466d4f6ca469b023916276966a, type: 3}

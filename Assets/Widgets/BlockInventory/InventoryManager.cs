@@ -7,6 +7,7 @@ public class InventoryManager : MonoBehaviour, IPointerDownHandler
 {
     public int rows;
     public int columns;
+    public SelectMode itemSelectMode;
 
     [SerializeField] private RectTransform parentTransform;
     [SerializeField] private GridLayoutGroup gridLayout;
@@ -16,6 +17,11 @@ public class InventoryManager : MonoBehaviour, IPointerDownHandler
 
     public BlockItem selectedItem;
     public GameObject hoverTile;
+
+    public enum SelectMode { 
+        click,
+        hold
+    }
 
     private void Start() {
         CreateNewInventory();
