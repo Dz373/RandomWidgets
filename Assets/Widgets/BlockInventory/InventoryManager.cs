@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour, IPointerDownHandler
     public Dictionary<Vector3, BlockItem> grid;
 
     public BlockItem selectedItem;
+    public GameObject itemHighlight;
     public GameObject hoverTile;
 
     public enum SelectMode { 

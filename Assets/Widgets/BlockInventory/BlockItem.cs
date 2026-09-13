@@ -7,6 +7,7 @@ public class BlockItem : MonoBehaviour {
     public bool moving;
     public bool inInventory;
     private bool rotating;
+    private bool instantiated;
     public Color color;
     public Vector3[] boxPositions;
 
@@ -24,11 +25,16 @@ public class BlockItem : MonoBehaviour {
     private void Start() {
         gm = FindFirstObjectByType<InventoryManager>();
 
+        if (instantiated)
+            return;
+
         foreach (Vector3 pos in boxPositions) {
             GameObject hitbox = Instantiate(itemHitbox, hitboxContainer.transform);
             hitbox.GetComponent<ItemHitbox>().InstantiateHitbox(pos, color);
             hitboxes.Add(hitbox);
         }
+
+        instantiated = true;
     }
 
     private void Update() {
@@ -58,6 +64,9 @@ public class BlockItem : MonoBehaviour {
 
         transform.rotation = targetRotation;
         rotating = false;
+
+        if (gm.itemHighlight)
+            gm.itemHighlight.transform.rotation = targetRotation;
     }
 
     public void SelectItem(Vector3 selectedBox) {
@@ -118,5 +127,18 @@ public class BlockItem : MonoBehaviour {
         }
 
         return cords;
+    }
+
+    public GameObject CreateHighlight(Vector3 pos) {
+        GameObject highlight = Instantiate(gameObject, gm.transform);
+        highlight.transform.position = pos;
+     
+        CanvasGroup cg = highlight.GetComponent<CanvasGroup>();
+        cg.alpha = 0.5f;
+        cg.blocksRaycasts = false;
+
+        highlight.GetComponent<BlockItem>().moving = false;
+
+        return highlight;
     }
 }
