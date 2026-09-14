@@ -10,6 +10,7 @@ public class ClickerManager : MonoBehaviour
 
     public Dictionary<string, float> powerPerSecond = new Dictionary<string, float>();
 
+    [Header("Object References")]
     [SerializeField] private TextMeshProUGUI counterText;
 
     private void Start() {

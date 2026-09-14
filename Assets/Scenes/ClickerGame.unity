@@ -658,6 +658,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8583804710977849794, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
   m_PrefabInstance: {fileID: 438513831}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &534376085 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2489007364184854475, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+  m_PrefabInstance: {fileID: 629463578}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &629463578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -681,6 +686,14 @@ PrefabInstance:
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: buttonName
       value: Idle 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+      propertyPath: progressBar
+      value: 
+      objectReference: {fileID: 534376085}
+    - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+      propertyPath: powerPerLevel
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8583804710977849794, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: m_Pivot.x
@@ -764,7 +777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8921595072051556083, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: m_text
-      value: Idle 2
+      value: Idle 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -799,6 +812,14 @@ PrefabInstance:
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: buttonName
       value: Idle 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+      propertyPath: progressBar
+      value: 
+      objectReference: {fileID: 1075763022}
+    - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+      propertyPath: powerPerLevel
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8583804710977849794, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: m_Pivot.x
@@ -892,6 +913,11 @@ PrefabInstance:
 --- !u!224 &955187293 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8583804710977849794, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+  m_PrefabInstance: {fileID: 955187292}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1075763022 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2489007364184854475, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
   m_PrefabInstance: {fileID: 955187292}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1434107054

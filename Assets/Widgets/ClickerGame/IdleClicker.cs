@@ -6,13 +6,16 @@ public class IdleClicker : MonoBehaviour
     public int power = 1;
     public int cost = 5;
     public int level = 0;
+    public int powerPerLevel = 1;
     public float interval = 5;
     public string buttonName;
 
     private float curTime = 0;
     private ClickerManager gm;
 
+    [Header("Object References")]
     [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private RectTransform progressBar;
 
     private void Awake() {
         gm = FindFirstObjectByType<ClickerManager>();
@@ -26,6 +29,8 @@ public class IdleClicker : MonoBehaviour
     private void Update() {
         if (level > 0) {
             curTime += Time.deltaTime;
+            progressBar.localScale = new Vector3(curTime/interval, 1, 1);
+
             if (curTime >= interval) {
                 gm.UpdateCounter(power);
                 curTime = 0;
