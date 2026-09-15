@@ -1,11 +1,9 @@
 using UnityEngine;
 using TMPro;
 
-public class IdleClicker : MonoBehaviour
-{
+public class IdleClicker : IdleUpgrade {
     public int power = 1;
     public int cost = 5;
-    public int level = 0;
     public int powerPerLevel = 1;
     public float interval = 5;
     public string buttonName;
@@ -38,7 +36,7 @@ public class IdleClicker : MonoBehaviour
         }
     }
 
-    public void Upgrade() {
+    public override void Upgrade() {
         if (gm.counter >= cost) {
             level++;
 

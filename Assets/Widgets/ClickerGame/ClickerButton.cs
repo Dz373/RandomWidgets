@@ -1,10 +1,8 @@
 using UnityEngine;
 
-public class ClickerButton : MonoBehaviour
-{
+public class ClickerButton : IdleUpgrade {
     public int power = 1;
     public int cost = 5;
-    public int level = 0;
 
     private ClickerManager gm;
 
@@ -12,11 +10,11 @@ public class ClickerButton : MonoBehaviour
         gm = FindFirstObjectByType<ClickerManager>();
     }
 
-    private void OnMouseDown() {
+    public void ButtonPress() {
         gm.UpdateCounter(power);
     }
 
-    public void Upgrade() {
+    public override void Upgrade() {
         if(gm.counter >= cost) {
             level++;
             power++;

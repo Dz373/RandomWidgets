@@ -7,24 +7,30 @@ using System;
 public class ClickerManager : MonoBehaviour
 {
     public int counter = 0;
-
+    public ClickerSaveFile save;
     public Dictionary<string, float> powerPerSecond = new Dictionary<string, float>();
+    private IdleUpgrade[] upgrades;
 
     [Header("Object References")]
     [SerializeField] private TextMeshProUGUI counterText;
 
+    private string savePath;
     private void Start() {
+        savePath = Path.Combine(Application.persistentDataPath, "savefile.json");
+
         //int totalSeconds = CaculateOfflineTime();
-        print(CalculateIdleGain());
+        upgrades = GetComponentsInChildren<IdleUpgrade>();
+
+        LoadGame();
     }
 
     private int CalculateIdleGain() {
-        float total = 0;
+        float pps = 0;
         foreach (string key in powerPerSecond.Keys) {
-            total += powerPerSecond[key];
+            pps += powerPerSecond[key];
         }
-        
-        return (int)total;
+
+        return (int)(pps * CalculateOfflineTime());
     }
 
     public void UpdateCounter(int amount) {
@@ -33,18 +39,37 @@ public class ClickerManager : MonoBehaviour
     }
 
     public void SaveGame() {
-        PlayerPrefs.SetString("QuitTime", DateTime.UtcNow.ToString());
-        
-        PlayerPrefs.Save();
+        save.quitTime = DateTime.UtcNow.ToString();
+
+        for (int i = 0; i < upgrades.Length; i++) {
+            save.upgradeLevels[i] = upgrades[i].level;
+        }
+
+        string json = JsonUtility.ToJson(save, true);
+        File.WriteAllText(savePath, json);
     }
 
-    private int CaculateOfflineTime() {
-        if (!PlayerPrefs.HasKey("QuitTime")) 
+    private void LoadGame() {
+        if (File.Exists(savePath)) {
+            string json = File.ReadAllText(savePath);
+            save = JsonUtility.FromJson<ClickerSaveFile>(json);
+        }
+        else
+            save = NewGame();
+    }
+
+    public ClickerSaveFile NewGame() {
+        ClickerSaveFile gameData = new ClickerSaveFile();
+        gameData.upgradeLevels = new int[upgrades.Length];
+
+        return gameData;
+    }
+
+    private int CalculateOfflineTime() {
+        if (save == null) 
             return 0;
 
-        string quitTime = PlayerPrefs.GetString("QuitTime");
-
-        if (DateTime.TryParse(quitTime, out DateTime lastQuitTime)) {
+        if (DateTime.TryParse(save.quitTime, out DateTime lastQuitTime)) {
             TimeSpan ts = DateTime.UtcNow - lastQuitTime;
             
             return (int)ts.TotalSeconds;
@@ -52,4 +77,10 @@ public class ClickerManager : MonoBehaviour
 
         return 0;
     }
+}
+
+[Serializable]
+public class ClickerSaveFile {
+    public string quitTime;
+    public int[] upgradeLevels;
 }

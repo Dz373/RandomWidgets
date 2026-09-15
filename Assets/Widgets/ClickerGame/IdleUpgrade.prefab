@@ -278,9 +278,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0c7452a8fbce0c49a8c4fb2228bfca7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 0
   power: 1
   cost: 5
-  level: 0
   powerPerLevel: 1
   interval: 5
   buttonName: Idle
