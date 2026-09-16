@@ -40,6 +40,7 @@ public class ClickerManager : MonoBehaviour
 
     public void SaveGame() {
         save.quitTime = DateTime.UtcNow.ToString();
+        save.counter = counter;
 
         for (int i = 0; i < upgrades.Length; i++) {
             save.upgradeLevels[i] = upgrades[i].level;
@@ -56,6 +57,12 @@ public class ClickerManager : MonoBehaviour
         }
         else
             save = NewGame();
+
+        for (int i = 0; i < upgrades.Length; i++) {
+            upgrades[i].LoadLevel(save.upgradeLevels[i]);
+        }
+
+        UpdateCounter(save.counter);
     }
 
     public ClickerSaveFile NewGame() {
@@ -83,4 +90,5 @@ public class ClickerManager : MonoBehaviour
 public class ClickerSaveFile {
     public string quitTime;
     public int[] upgradeLevels;
+    public int counter = 0;
 }

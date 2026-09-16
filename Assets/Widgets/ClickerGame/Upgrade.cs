@@ -7,4 +7,8 @@ public class IdleUpgrade : MonoBehaviour
     public virtual void Upgrade() {
 
     }
+
+    public virtual void LoadLevel(int l) {
+
+    }
 }

@@ -24,4 +24,10 @@ public class ClickerButton : IdleUpgrade {
             cost = (int)(cost * 1.2);
         }
     }
+
+    public override void LoadLevel(int l) {
+        level = l;
+        power = l;
+        cost = (int)(cost * Mathf.Pow(1.25f, l));
+    }
 }

@@ -515,6 +515,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
+      propertyPath: power
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: buttonName
       value: Idle 1
       objectReference: {fileID: 0}
@@ -635,7 +639,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: power
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: buttonName
@@ -761,7 +765,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: power
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5909294674554545724, guid: 01d9d7a4216a2f846875f59871f795d7, type: 3}
       propertyPath: buttonName
@@ -1356,6 +1360,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   counter: 0
+  save:
+    quitTime: 
+    upgradeLevels: 
+    counter: 0
   counterText: {fileID: 411049909}
 --- !u!1 &1896603074
 GameObject:
