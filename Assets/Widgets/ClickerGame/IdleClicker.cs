@@ -15,9 +15,8 @@ public class IdleClicker : IdleUpgrade {
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private RectTransform progressBar;
 
-    private void Awake() {
+    private void Start() {
         gm = FindFirstObjectByType<ClickerManager>();
-        gm.powerPerSecond.Add(buttonName, GetPowerPerSecond());
     }
 
     private void OnValidate() {

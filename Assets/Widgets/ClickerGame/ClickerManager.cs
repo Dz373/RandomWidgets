@@ -15,12 +15,10 @@ public class ClickerManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI counterText;
 
     private string savePath;
-    private void Start() {
+    private void Awake() {
         savePath = Path.Combine(Application.persistentDataPath, "savefile.json");
 
-        //int totalSeconds = CaculateOfflineTime();
         upgrades = GetComponentsInChildren<IdleUpgrade>();
-
         LoadGame();
     }
 
@@ -30,7 +28,12 @@ public class ClickerManager : MonoBehaviour
             pps += powerPerSecond[key];
         }
 
-        return (int)(pps * CalculateOfflineTime());
+        float offlineTime = CalculateOfflineTime();
+
+        Debug.Log("Power per Second: " + pps);
+        Debug.Log("Total Offline Time: " + offlineTime);
+
+        return (int)(pps * offlineTime);
     }
 
     public void UpdateCounter(int amount) {
@@ -60,9 +63,14 @@ public class ClickerManager : MonoBehaviour
 
         for (int i = 0; i < upgrades.Length; i++) {
             upgrades[i].LoadLevel(save.upgradeLevels[i]);
+
+            if(upgrades[i] is IdleClicker) {
+                IdleClicker idle = (IdleClicker)upgrades[i];
+                powerPerSecond.Add(idle.buttonName, idle.GetPowerPerSecond());
+            }
         }
 
-        UpdateCounter(save.counter);
+        UpdateCounter(save.counter + CalculateIdleGain());
     }
 
     public ClickerSaveFile NewGame() {
