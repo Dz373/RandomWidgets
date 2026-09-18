@@ -7,6 +7,7 @@ using System;
 public class ClickerManager : MonoBehaviour
 {
     public int counter = 0;
+    
     public ClickerSaveFile save;
     public Dictionary<string, float> powerPerSecond = new Dictionary<string, float>();
     private IdleUpgrade[] upgrades;
@@ -17,6 +18,7 @@ public class ClickerManager : MonoBehaviour
     private string savePath;
     private void Awake() {
         savePath = Path.Combine(Application.persistentDataPath, "savefile.json");
+        print("Save Path: " + savePath);
 
         upgrades = GetComponentsInChildren<IdleUpgrade>();
         LoadGame();

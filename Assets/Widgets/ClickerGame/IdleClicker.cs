@@ -2,8 +2,6 @@ using UnityEngine;
 using TMPro;
 
 public class IdleClicker : IdleUpgrade {
-    public int power = 0;
-    public int cost = 5;
     public int powerPerLevel = 1;
     public float interval = 5;
     public string buttonName;
@@ -36,12 +34,12 @@ public class IdleClicker : IdleUpgrade {
     }
 
     public override void Upgrade() {
-        if (gm.counter >= cost) {
+        if (gm.counter >= (int)cost) {
             level++;
             power += powerPerLevel;
 
-            gm.UpdateCounter(-cost);
-            cost = (int)(cost * 1.2);
+            gm.UpdateCounter(-(int)cost);
+            cost *= 1.2f;
         }
     }
 
@@ -52,6 +50,6 @@ public class IdleClicker : IdleUpgrade {
     public override void LoadLevel(int l) {
         level = l;
         power = l * powerPerLevel;
-        cost = (int)(cost * Mathf.Pow(1.25f, l));
+        cost *= Mathf.Pow(1.2f, l);
     }
 }

@@ -1,8 +1,6 @@
 using UnityEngine;
 
 public class ClickerButton : IdleUpgrade {
-    public int power = 1;
-    public int cost = 5;
 
     private ClickerManager gm;
 
@@ -15,19 +13,19 @@ public class ClickerButton : IdleUpgrade {
     }
 
     public override void Upgrade() {
-        if(gm.counter >= cost) {
+        if(gm.counter >= (int)cost) {
             level++;
             power++;
             
-            gm.UpdateCounter(-cost);
+            gm.UpdateCounter(-(int)cost);
 
-            cost = (int)(cost * 1.2);
+            cost *= 1.2f;
         }
     }
 
     public override void LoadLevel(int l) {
         level = l;
         power = l;
-        cost = (int)(cost * Mathf.Pow(1.25f, l));
+        cost *= Mathf.Pow(1.2f, l-1);
     }
 }
