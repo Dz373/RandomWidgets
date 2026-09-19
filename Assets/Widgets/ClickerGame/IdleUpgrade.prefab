@@ -264,7 +264,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 60}
+  m_SizeDelta: {x: 5, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5909294674554545724
 MonoBehaviour:
@@ -279,12 +279,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
-  power: 1
   cost: 5
-  powerPerLevel: 1
-  interval: 5
+  power: 1
   buttonName: Idle
   nameText: {fileID: 8921595072051556083}
+  powerPerLevel: 1
+  interval: 5
   progressBar: {fileID: 2489007364184854475}
 --- !u!222 &1486180807673664538
 CanvasRenderer:

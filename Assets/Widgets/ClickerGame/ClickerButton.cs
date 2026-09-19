@@ -20,6 +20,8 @@ public class ClickerButton : IdleUpgrade {
             gm.UpdateCounter(-(int)cost);
 
             cost *= 1.2f;
+
+            nameText.text = buttonName + " Lvl: " + level;
         }
     }
 
@@ -27,5 +29,8 @@ public class ClickerButton : IdleUpgrade {
         level = l;
         power = l;
         cost *= Mathf.Pow(1.2f, l-1);
+
+        if(level > 0)
+            nameText.text = buttonName + " Lvl: " + level;
     }
 }

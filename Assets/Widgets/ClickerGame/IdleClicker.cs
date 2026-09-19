@@ -4,21 +4,15 @@ using TMPro;
 public class IdleClicker : IdleUpgrade {
     public int powerPerLevel = 1;
     public float interval = 5;
-    public string buttonName;
 
     private float curTime = 0;
     private ClickerManager gm;
 
     [Header("Object References")]
-    [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private RectTransform progressBar;
 
     private void Start() {
         gm = FindFirstObjectByType<ClickerManager>();
-    }
-
-    private void OnValidate() {
-        nameText.text = buttonName;
     }
 
     private void Update() {
@@ -40,6 +34,8 @@ public class IdleClicker : IdleUpgrade {
 
             gm.UpdateCounter(-(int)cost);
             cost *= 1.2f;
+
+            nameText.text = buttonName + " Lvl: " + level;
         }
     }
 
@@ -51,5 +47,8 @@ public class IdleClicker : IdleUpgrade {
         level = l;
         power = l * powerPerLevel;
         cost *= Mathf.Pow(1.2f, l);
+
+        if(level > 0)
+            nameText.text = buttonName + " Lvl: " + level;
     }
 }
