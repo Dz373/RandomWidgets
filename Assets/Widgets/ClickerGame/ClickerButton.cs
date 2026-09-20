@@ -9,13 +9,14 @@ public class ClickerButton : IdleUpgrade {
     }
 
     public void ButtonPress() {
-        gm.UpdateCounter(power);
+        gm.UpdateCounter(power*multiplier);
     }
 
     public override void Upgrade() {
         if(gm.counter >= (int)cost) {
             level++;
             power++;
+            multiplier = (int)(level / 25) + 1;
             
             gm.UpdateCounter(-(int)cost);
 
@@ -28,6 +29,7 @@ public class ClickerButton : IdleUpgrade {
     public override void LoadLevel(int l) {
         level = l;
         power = l;
+        multiplier = (int)(l / 25) + 1;
         cost *= Mathf.Pow(1.2f, l-1);
 
         if(level > 0)

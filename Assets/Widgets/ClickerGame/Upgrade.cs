@@ -6,6 +6,7 @@ public class IdleUpgrade : MonoBehaviour
     public int level = 0;
     public float cost = 5;
     public int power = 0;
+    public int multiplier = 1;
     
     public string buttonName;
     public TextMeshProUGUI nameText;
