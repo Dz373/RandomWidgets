@@ -10,36 +10,40 @@ public class SnakeController : MonoBehaviour
 
     public SnakeSegment head;
     public SnakeSegment tail;
+    private int totalLength = 1;
 
     private float curTime;
     private bool moveKey = false;
 
     [SerializeField] GameObject snakeSegment;
-    [SerializeField] GameObject snakePellet;
 
     private void Update() {
         curTime += Time.deltaTime;
 
         if (!moveKey) {
-            if (Input.GetKeyDown(KeyCode.DownArrow) && dir != Vector3.up) {
+            if (Input.GetKeyDown(KeyCode.S) && dir != Vector3.up) {
                 dir = Vector3.down;
                 moveKey = true;
             }
-            if (Input.GetKeyDown(KeyCode.UpArrow) && dir != Vector3.down) {
+            if (Input.GetKeyDown(KeyCode.W) && dir != Vector3.down) {
                 dir = Vector3.up;
                 moveKey = true;
             }
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && dir != Vector3.right) {
+            if (Input.GetKeyDown(KeyCode.A) && dir != Vector3.right) {
                 dir = Vector3.left;
                 moveKey = true;
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow) && dir != Vector3.left) {
+            if (Input.GetKeyDown(KeyCode.D) && dir != Vector3.left) {
                 dir = Vector3.right;
                 moveKey = true;
             }
         }
 
-        if (curTime >= interval) {
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            dir = Vector3.zero;
+        }
+
+        if (curTime >= interval && dir != Vector3.zero) {
             curTime = 0;
 
             Vector3 tailPos = tail.transform.position;
@@ -54,7 +58,25 @@ public class SnakeController : MonoBehaviour
                 tail = tail.next;
 
                 addLength--;
+
+                if (++totalLength % 2 == 0)
+                    newSeg.GetComponent<SpriteRenderer>().color = Color.black;
+                else
+                    newSeg.GetComponent<SpriteRenderer>().color = Color.red;
             }
         }
+    }
+
+    public bool SnakeOccupied(Vector3 pos) {
+        SnakeSegment cur = head;
+        while (cur != null && cur.transform.position != pos)
+            cur = cur.next;
+
+        if (cur == null)
+            return false;
+        if (cur.transform.position == pos)
+            return true;
+
+        return false;
     }
 }

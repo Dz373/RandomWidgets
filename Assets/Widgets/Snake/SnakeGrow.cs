@@ -1,16 +1,40 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SnakeGrow : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
+    SnakeController gm;
+    List<Vector2> randomPositions = new List<Vector2>();
+    Queue<Vector2> removedPositions = new Queue<Vector2>();
+
+    private void Start() {
+        gm = FindFirstObjectByType<SnakeController>();
         
+        for(int x = -8; x <= 8; x++) {
+            for(int y = -4; y <= 4; y++) {
+                randomPositions.Add(new Vector2(x, y));
+            }
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void OnTriggerEnter2D(Collider2D collision) {
+        gm.addLength++;
+
+        int newIndex = Random.Range(0, randomPositions.Count);
+        while (gm.SnakeOccupied(randomPositions[newIndex])) {
+            removedPositions.Enqueue(randomPositions[newIndex]);
+            randomPositions.Remove(randomPositions[newIndex]);
+
+            newIndex = Random.Range(0, randomPositions.Count);
+        }
+
+        Vector2 newPos = randomPositions[newIndex];
+
+        while(removedPositions.Count > 0) {
+            randomPositions.Add(removedPositions.Dequeue());
+        }
+
+        transform.position = newPos;
     }
 }
