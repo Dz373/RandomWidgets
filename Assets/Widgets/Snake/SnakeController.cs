@@ -1,21 +1,29 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class SnakeController : MonoBehaviour
 {
+    [Header("Snake")]
     public int addLength = 3;
     public float interval = 0.25f;
     public Vector3 dir = Vector3.up;
 
+    [Header("Map Bounds")]
+    public int xMin;
+    public int xMax;
+    public int yMin;
+    public int yMax;
+
+    [Header("Object References")]
     public SnakeSegment head;
     public SnakeSegment tail;
-    private int totalLength = 1;
+    [SerializeField] GameObject snakeSegment;
 
+    private int totalLength = 1;
     private float curTime;
     private bool moveKey = false;
-
-    [SerializeField] GameObject snakeSegment;
 
     private void Update() {
         curTime += Time.deltaTime;
@@ -51,6 +59,9 @@ public class SnakeController : MonoBehaviour
             head.Move(head.transform.position + dir);
             moveKey = false;
 
+            if (OutOfBounds(head.transform.position))
+                RestartGame();
+
             if (addLength > 0) {
                 GameObject newSeg = Instantiate(snakeSegment);
                 newSeg.transform.position = tailPos;
@@ -63,6 +74,7 @@ public class SnakeController : MonoBehaviour
                     newSeg.GetComponent<SpriteRenderer>().color = Color.black;
                 else
                     newSeg.GetComponent<SpriteRenderer>().color = Color.red;
+                tail.segmentNum = totalLength;
             }
         }
     }
@@ -78,5 +90,17 @@ public class SnakeController : MonoBehaviour
             return true;
 
         return false;
+    }
+
+    private bool OutOfBounds(Vector3 pos) {
+        if (pos.x < xMin || pos.x > xMax)
+            return true;
+        if (pos.y < yMin || pos.y > yMax)
+            return true;
+        return false;
+    }
+
+    public void RestartGame() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

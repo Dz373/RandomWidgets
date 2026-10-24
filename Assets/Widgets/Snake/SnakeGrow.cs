@@ -10,8 +10,8 @@ public class SnakeGrow : MonoBehaviour
     private void Start() {
         gm = FindFirstObjectByType<SnakeController>();
         
-        for(int x = -8; x <= 8; x++) {
-            for(int y = -4; y <= 4; y++) {
+        for(int x = gm.xMin; x <= gm.xMax; x++) {
+            for(int y = gm.yMin; y <= gm.yMax; y++) {
                 randomPositions.Add(new Vector2(x, y));
             }
         }

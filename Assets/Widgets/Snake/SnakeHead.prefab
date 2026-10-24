@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   next: {fileID: 0}
+  segmentNum: 0
+  target: {x: 0, y: 0}
 --- !u!212 &9150881150456075142
 SpriteRenderer:
   m_ObjectHideFlags: 0
