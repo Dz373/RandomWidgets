@@ -9,9 +9,12 @@ public class MatchController : MonoBehaviour
     public int columns;
     public List<Color> itemColors;
 
+    private MatchItem selectedItem;
+    private Vector2[] adjCells = {Vector2.up, Vector2.down, Vector2.right, Vector2.left };
+
     [Header("Object References")]
     [SerializeField] private Transform itemContainer;
-    [SerializeField] private GameObject item;
+    [SerializeField] private GameObject matchItem;
 
     private void Start() {
         CreateNewGrid();
@@ -20,12 +23,39 @@ public class MatchController : MonoBehaviour
     private void CreateNewGrid() {
         for (int i = 0; i < rows; i++) {
             for(int j = 0; j < columns; j++) {
-                GameObject newItem = Instantiate(item, itemContainer);
-                MatchItem matchItem = newItem.GetComponent<MatchItem>();
+                GameObject newItem = Instantiate(matchItem, itemContainer);
+                MatchItem item = newItem.GetComponent<MatchItem>();
 
-                matchItem.itemColor = itemColors[Random.Range(0, itemColors.Count)];
-                matchItem.itemPos = new Vector2(i, j);
+                item.itemColor = itemColors[Random.Range(0, itemColors.Count)];
+                item.itemPos = new Vector2(i, j);
             }
         }
+    }
+
+    public void SelectItem(MatchItem item) {
+        if (selectedItem) {
+            if (!IsAdjacent(item.itemPos))
+                return;
+
+            Vector2 temp = selectedItem.itemPos;
+            selectedItem.MoveItem(item.itemPos);
+            item.MoveItem(temp);
+
+            selectedItem.highlight.SetActive(false);
+            selectedItem = null;
+        }
+        else {
+            selectedItem = item;
+            selectedItem.highlight.SetActive(true);
+
+        }
+    }
+
+    private bool IsAdjacent(Vector2 pos) {
+        foreach(Vector2 dir in adjCells) {
+            if (selectedItem.itemPos + dir == pos)
+                return true;
+        }
+        return false;
     }
 }
