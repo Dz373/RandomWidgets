@@ -8,19 +8,39 @@ public class MatchItem : MonoBehaviour
     public GameObject highlight;
     private MatchController gm;
 
+    private Vector3Int target;
+    private bool finishMoving;
+
     private void Start() {
-        transform.localPosition = itemPos;
         GetComponent<SpriteRenderer>().color = itemColor;
         gm = FindFirstObjectByType<MatchController>();
+
+        transform.localPosition = new Vector3(itemPos.x, itemPos.y + gm.rows);
+        target = itemPos;
+        finishMoving = false;
+    }
+
+    private void Update() {
+        if (finishMoving)
+            return;
+
+        float step = Time.deltaTime * 5;
+        transform.localPosition = Vector3.MoveTowards(transform.localPosition, target, step);
+
+        if(Vector3.Distance(transform.localPosition, target) < 0.001) {
+            finishMoving = true;
+        }
     }
 
     private void OnMouseDown() {
-        gm.SelectItem(this);
+        StartCoroutine(gm.SelectItem(this));
     }
 
     public void MoveItem(Vector3Int pos) {
         itemPos = pos;
-        transform.localPosition = pos;
         gm.items[itemPos.x, itemPos.y] = this;
+
+        target = pos;
+        finishMoving = false;
     }
 }
