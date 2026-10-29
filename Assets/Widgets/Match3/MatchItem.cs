@@ -43,4 +43,9 @@ public class MatchItem : MonoBehaviour
         target = pos;
         finishMoving = false;
     }
+
+    public void ChangeItem(Color newColor) {
+        itemColor = newColor;
+        GetComponent<SpriteRenderer>().color = itemColor;
+    }
 }

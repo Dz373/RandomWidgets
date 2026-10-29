@@ -6,29 +6,51 @@ public class MatchController : MonoBehaviour {
     public int rows;
     public int columns;
     public List<Color> itemColors;
+    public bool finishTurn;
 
     private MatchItem selectedItem;
     private Vector2Int[] adjCells = { Vector2Int.up, Vector2Int.down, Vector2Int.right, Vector2Int.left };
     public MatchItem[,] items;
-    private bool finishTurn;
+
 
     [Header("Object References")]
     [SerializeField] private Transform itemContainer;
     [SerializeField] private GameObject matchItem;
 
     private void Start() {
-        StartCoroutine(CreateNewGrid());
+        CreateNewGrid();
     }
 
-    private IEnumerator CreateNewGrid() {
-        items = new MatchItem[rows, columns];
+    private IEnumerator ScoreBoard() {
         finishTurn = false;
+
+        Stack<Vector3Int> board = ScoreEntireBoard();
+        while (board.Count > 0) {
+            ScoreItems(board);
+            
+            yield return new WaitForSeconds(1f);
+
+            board = ScoreEntireBoard();
+        }
+        
+        finishTurn = true;
+    }
+
+    private void CreateNewGrid() {
+        items = new MatchItem[rows, columns];
 
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
                 GenerateItem(j, i, false);
             }
-            yield return new WaitForSeconds(0.2f);
+        }
+
+        Stack<Vector3Int> board = ScoreEntireBoard();
+        while(board.Count > 0) {
+            foreach (Vector3Int v in board) {
+                items[v.x, v.y].ChangeItem(itemColors[Random.Range(0, itemColors.Count)]);
+            }
+            board = ScoreEntireBoard();
         }
 
         finishTurn = true;
@@ -99,6 +121,8 @@ public class MatchController : MonoBehaviour {
     }
 
     public IEnumerator SelectItem(MatchItem item) {
+        if (!finishTurn)
+            yield break;
 
         if (selectedItem) {
             if (!IsAdjacent(item.itemPos))
@@ -111,19 +135,8 @@ public class MatchController : MonoBehaviour {
 
             yield return new WaitForSeconds(0.2f);
 
-            Stack<Vector3Int> itemsStack = GetSameItemsInLine(item.itemPos.x, item.itemPos.y);
-            Stack<Vector3Int> tempStack = GetSameItemsInLine(selectedItem.itemPos.x, selectedItem.itemPos.y);
-
-            if (itemsStack.Count >= 3 && tempStack.Count >= 3) {
-                while (tempStack.Count > 0)
-                    itemsStack.Push(tempStack.Pop());
-                ScoreItems(itemsStack);
-            }
-            else if (itemsStack.Count >= 3)
-                ScoreItems(itemsStack);
-            else if (tempStack.Count >= 3)
-                ScoreItems(tempStack);
-
+            StartCoroutine(ScoreBoard());
+            
             selectedItem = null;
         }
         else {
@@ -173,6 +186,23 @@ public class MatchController : MonoBehaviour {
         }
 
         return total;
+    }
+
+    private Stack<Vector3Int> ScoreEntireBoard() {
+        Stack<Vector3Int> itemsToScore = new Stack<Vector3Int>();
+
+        foreach (MatchItem i in items) {
+            Stack<Vector3Int> itemsStack = GetSameItemsInLine(i.itemPos.x, i.itemPos.y);
+            if(itemsStack.Count >= 3) {
+                while (itemsStack.Count > 0) {
+                    Vector3Int nextItem = itemsStack.Pop();
+                    if (!itemsToScore.Contains(nextItem))
+                        itemsToScore.Push(nextItem);
+                }
+            }
+        }
+
+        return itemsToScore;
     }
 
     private bool IsAdjacent(Vector3Int pos) {
