@@ -4,6 +4,7 @@ public class MatchItem : MonoBehaviour
 {
     public Color itemColor;
     public Vector3Int itemPos;
+    public string special;
 
     public GameObject highlight;
     private MatchController gm;

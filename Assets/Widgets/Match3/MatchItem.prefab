@@ -135,7 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemColor: {r: 0, g: 0, b: 1, a: 0}
-  itemPos: {x: 0, y: 0}
+  itemPos: {x: 0, y: 0, z: 0}
+  special: 
   highlight: {fileID: 3284173907043492317}
 --- !u!212 &8270766557422593934
 SpriteRenderer:
